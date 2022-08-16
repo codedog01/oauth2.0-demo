@@ -1,7 +1,6 @@
 package com.ronhe.romp.oauth2.core.service.impl;
 
 import com.ronhe.romp.oauth2.core.model.TokenModel;
-import com.ronhe.romp.oauth2.core.service.AbstractOAuth2Service;
 import com.ronhe.romp.oauth2.core.service.OAuth2Service;
 import com.ronhe.romp.oauth2.core.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,7 +28,8 @@ import java.util.Set;
  * @author 冷澳
  * @date 2022/8/16
  */
-public class PasswordCredentialsService extends AbstractOAuth2Service {
+@Service
+public class PasswordCredentialsService implements OAuth2Service {
     @Autowired
     TokenStore tokenStore;
 
@@ -100,5 +101,18 @@ public class PasswordCredentialsService extends AbstractOAuth2Service {
         return Result.ofSuccess(result);
     }
 
-
+    @Override
+    public Result<OAuth2AccessToken> refreshToken(TokenModel tokenModel) {
+        try {
+            UserDetails userDetails = userDetailService.loadUserByUsername(tokenModel.getClientId());
+            Map<String, String> parameters = new HashMap<String, String>();
+            parameters.put("grant_type", "refresh_token");
+            parameters.put("refresh_token", tokenModel.getRefreshToken());
+            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(tokenModel.getClientId(), null, userDetails.getAuthorities());
+            return Result.ofSuccess(tokenEndPoint.postAccessToken(token, parameters).getBody());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.ofThrowable(e);
+        }
+    }
 }

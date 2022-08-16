@@ -2,8 +2,6 @@ package com.ronhe.romp.oauth2.core.controller;
 
 import com.ronhe.romp.oauth2.core.model.TokenModel;
 import com.ronhe.romp.oauth2.core.service.OAuth2Service;
-import com.ronhe.romp.oauth2.core.service.impl.AuthorizationCodeService;
-import com.ronhe.romp.oauth2.core.service.impl.ClientCredentialsService;
 import com.ronhe.romp.oauth2.core.service.impl.PasswordCredentialsService;
 import com.ronhe.romp.oauth2.core.util.Result;
 import com.ronhe.romp.oauth2.core.util.SpringContextUtils;
@@ -23,8 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/oauth2")
 public class OAuth2Controller {
     @Autowired
-    SpringContextUtils springContextUtils;
-
+    OAuth2Service oAuth2Service;
 
     /**
      * 所需参数
@@ -34,7 +31,6 @@ public class OAuth2Controller {
      */
     @PostMapping("/getToken")
     public Result<OAuth2AccessToken> getToken(TokenModel tokenModel) {
-        OAuth2Service oAuth2Service = this.getOAuth2Service(tokenModel.getGrantType());
         return oAuth2Service.getToken(tokenModel);
     }
 
@@ -45,7 +41,6 @@ public class OAuth2Controller {
      */
     @PostMapping("/checkToken")
     public Result<TokenModel> checkToken(TokenModel tokenModel) {
-        OAuth2Service oAuth2Service = this.getOAuth2Service(tokenModel.getGrantType());
         return oAuth2Service.checkToken(tokenModel);
     }
 
@@ -57,21 +52,7 @@ public class OAuth2Controller {
      */
     @PostMapping("/refreshToken")
     public Result<OAuth2AccessToken> refreshToken(TokenModel tokenModel) {
-        OAuth2Service oAuth2Service = this.getOAuth2Service(tokenModel.getGrantType());
         return oAuth2Service.refreshToken(tokenModel);
     }
 
-
-    private OAuth2Service getOAuth2Service(String type) {
-        OAuth2Service oAuth2Service = null;
-        switch (type) {
-            case "password":
-                oAuth2Service= springContextUtils.getBean(PasswordCredentialsService.class);
-            case "authorization_code":
-                oAuth2Service= springContextUtils.getBean(AuthorizationCodeService.class);
-            case "client_credentials":
-                oAuth2Service= springContextUtils.getBean(ClientCredentialsService.class);
-        }
-        return oAuth2Service;
-    }
 }
