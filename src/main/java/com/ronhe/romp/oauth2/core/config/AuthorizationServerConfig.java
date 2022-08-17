@@ -41,15 +41,15 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private ClientDetailsService jdbcClientDetailsService;
 
 
-//    /**
-//     * @Description: 配置 token 节点的安全策略
-//     */
-//    @Override
-//    public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-//        security.tokenKeyAccess("de()")
-//                .checkTokenAccess("permitAll()")//默认"denyAll()"，不允许访问/oauth/check_token；"isAuthenticated()"需要携带auth；"permitAll()"直接访问
-//                .allowFormAuthenticationForClients();                //表单认证（申请令牌）
-//    }
+    /**
+     * @Description: 配置 token 节点的安全策略
+     */
+    @Override
+    public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+        security.tokenKeyAccess("permitAll()")
+                .checkTokenAccess("permitAll()")//默认"denyAll()"，不允许访问/oauth/check_token；"isAuthenticated()"需要携带auth；"permitAll()"直接访问
+                .allowFormAuthenticationForClients();                //表单认证（申请令牌）
+    }
 
     /**
      * @Description: 配置客户端信息, 相当于在认证服务器中注册哪些客户端（包括资源服务器）能访问

@@ -26,7 +26,7 @@ public interface TbUserMapper {
      * 查询用户的权限根据用户查询权限
      */
     @Select("SELECT " +
-            "service_name+service_url  " +
+            "concat(service_name,service_url) " +
             "FROM " +
             "oauth_service_url  " +
             "WHERE " +

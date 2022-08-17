@@ -1,11 +1,11 @@
 package com.ronhe.romp.oauth2.core.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
@@ -53,6 +53,7 @@ public class BeanConfig {
         service.setTokenStore(tokenStore());
         return service;
     }
+
     @Bean()
     public ClientDetailsService jdbcClientDetailsService(DataSource dataSource) {
         JdbcClientDetailsService clientDetailsService = new JdbcClientDetailsService(dataSource);

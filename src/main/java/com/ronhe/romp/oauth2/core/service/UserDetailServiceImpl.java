@@ -1,4 +1,4 @@
-package com.ronhe.romp.oauth2.core.service.impl;
+package com.ronhe.romp.oauth2.core.service;
 
 import com.ronhe.romp.oauth2.core.mapper.TbUserMapper;
 import org.apache.commons.lang.StringUtils;
@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,14 +16,12 @@ import java.util.List;
 
 /**
  * <p>description goes here</p>
- *
+ * 重写oauth2组件，自定义认证过程
  * @author 冷澳
  * @date 2022/8/10
  */
 @Service
 public class UserDetailServiceImpl implements UserDetailsService {
-    @Autowired
-    PasswordEncoder passwordEncoder;
 
     @Autowired
     TbUserMapper tbUserMapper;
