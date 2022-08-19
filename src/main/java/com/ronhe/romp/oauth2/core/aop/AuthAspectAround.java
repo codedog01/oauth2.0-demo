@@ -13,8 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2RefreshToken;
+import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -40,9 +42,12 @@ public class AuthAspectAround {
     public void resetRefreshToken() {
     }
 
+    @Pointcut(value = "execution(* org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint.authorize(..))")
+    public void returnCode() {
+    }
 
     @Around(value = "resetRefreshToken()")
-    public Object handleControllerMethod(ProceedingJoinPoint point) {
+    public Object resetRefreshToken(ProceedingJoinPoint point) {
         Object proceed = null;
         try {
             proceed = point.proceed();
@@ -61,4 +66,13 @@ public class AuthAspectAround {
         return proceed ;
     }
 
+    @Around(value = "returnCode()")
+    public Object returnCode(ProceedingJoinPoint point) throws Throwable {
+        Object proceed = point.proceed();
+        ModelAndView modelAndView = (ModelAndView) proceed;
+        if (modelAndView.hasView()) {
+            throw OAuth2Exception.create("dasd", "modelAndView");
+        }
+        return proceed ;
+    }
 }

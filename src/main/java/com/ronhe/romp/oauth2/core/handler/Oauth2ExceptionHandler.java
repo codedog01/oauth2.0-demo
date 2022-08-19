@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * <p>description goes here</p>
- *
+ * 拦截oauth2异常，防止大量异常信息打印
  * @author 冷澳
  * @date 2022/8/17
  */

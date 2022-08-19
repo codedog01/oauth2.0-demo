@@ -32,4 +32,6 @@ public interface TbUserMapper {
             "WHERE " +
             "client_id = #{clientId}")
     List<String> findPermissionByClientId(String clientId);
+    @Select("SELECT code FROM oauth_code WHERE client_id = #{client_id}")
+    List<String> findCodeByClientId(String client_id);
 }

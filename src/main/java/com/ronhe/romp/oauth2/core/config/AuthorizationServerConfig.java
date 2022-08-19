@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
@@ -40,14 +41,18 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private ClientDetailsService jdbcClientDetailsService;
 
+    @Autowired
+    AuthorizationCodeServices authorizationCodeServices;
+
 
     /**
      * @Description: 配置 token 节点的安全策略
      */
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-        security.tokenKeyAccess("permitAll()")
-                .checkTokenAccess("permitAll()")//默认"denyAll()"，不允许访问/oauth/check_token；"isAuthenticated()"需要携带auth；"permitAll()"直接访问
+        security
+//                .tokenKeyAccess("permitAll()")
+//                .checkTokenAccess("permitAll()")//默认"denyAll()"，不允许访问/oauth/check_token；"isAuthenticated()"需要携带auth；"permitAll()"直接访问
                 .allowFormAuthenticationForClients();                //表单认证（申请令牌）
     }
 
@@ -68,6 +73,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         endpoints.authenticationManager(authenticationManager) // 开启密码验证
                 .tokenStore(tokenStore) // 设置tokenStore，生成token时会向数据库中保存
                 .tokenServices(tokenService)//令牌管理服务
-                .userDetailsService(userDetailsService);
+                .userDetailsService(userDetailsService)
+//                .reuseRefreshTokens(false)
+                .authorizationCodeServices(authorizationCodeServices);
     }
 }

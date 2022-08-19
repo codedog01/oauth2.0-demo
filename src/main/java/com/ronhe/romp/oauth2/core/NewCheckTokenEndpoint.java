@@ -1,18 +1,35 @@
 package com.ronhe.romp.oauth2.core;
 
 import com.ronhe.romp.oauth2.core.constant.Constants;
+import com.ronhe.romp.oauth2.core.mapper.TbUserMapper;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.ContentType;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.ExecutionContext;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
+import org.springframework.security.oauth2.provider.ClientDetails;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint;
 import org.springframework.security.oauth2.provider.endpoint.CheckTokenEndpoint;
+import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,20 +60,39 @@ public class NewCheckTokenEndpoint {
     TokenStore tokenStore;
 
     @Autowired
+    AuthorizationServerTokenServices tokenService;
+
+    @Autowired
     CheckTokenEndpoint checkTokenEndpoint;
 
+    @Autowired
+    ClientDetailsService clientDetailsService;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    @Autowired
+    ClientDetailsService jdbcClientDetailsService;
+
+    @Autowired
+    AuthorizationEndpoint authorizationEndpoint;
+
+    @Autowired
+    AuthorizationCodeServices authorizationCodeServices;
+
+    @Autowired
+    TbUserMapper mapper;
+
     /**
-     * header: Authorization:bearer token
-     * 所需参数 token
-     *
-     * @return
+     * @参数示例 {"token": "a792b89e-7010-4f3a-9567-a55ff29cc4c8", server_name": "admin",sub_path": "/test"}
      */
     @PostMapping("/checkToken")
+
     public Map<String, Object> checkToken(@RequestBody Map<String, String> parameters) {
         LinkedHashMap<String, Object> response = new LinkedHashMap<>();
         if (StringUtils.isEmpty(parameters.get(SERVER_NAME)) || StringUtils.isEmpty(parameters.get(SUB_PATH))) {
             response.put(Constants.ERROR, "illegal parameter");
-            response.put(Constants.ERROR_DESCRIPTION, "Please check the parameters :"+ SERVER_NAME+","+SUB_PATH+","+TOKEN);
+            response.put(Constants.ERROR_DESCRIPTION, "Please check the parameters :" + SERVER_NAME + "," + SUB_PATH + "," + TOKEN);
             return response;
         }
 
@@ -80,5 +116,65 @@ public class NewCheckTokenEndpoint {
         response.put(Constants.ERROR_DESCRIPTION, "token has no access");
         return response;
     }
+
+    /**
+     * @参数示例 {"token": "a792b89e-7010-4f3a-9567-a55ff29cc4c8", server_name": "admin",sub_path": "/test"}
+     */
+    @GetMapping("/removeToken")
+    public Map<String, Object> removeToken(@RequestBody Map<String, String> parameters) {
+        String clientId = parameters.get("client_id");
+        String secret = parameters.get("client_secret");
+        String token = parameters.get("token");
+        ClientDetails clientDetails = clientDetailsService.loadClientByClientId(clientId);
+        if (StringUtils.isEmpty(clientId) || StringUtils.isEmpty(secret) || StringUtils.isEmpty(token)) {
+            throw OAuth2Exception.create("illegal parameter", "client_id client_secret token Can not be empty");
+        }
+        boolean matches = passwordEncoder.matches(secret, clientDetails.getClientSecret());
+        if (matches) {
+            tokenStore.removeAccessToken(tokenStore.readAccessToken(token));
+        } else {
+            throw OAuth2Exception.create("Authentication is invalid", "invalid client_id/client_secret");
+        }
+        Map<String, Object> res = new LinkedHashMap<>();
+        res.put(Constants.SUCCESS, true);
+        return res;
+    }
+
+    /**
+     * @参数示例 {"token": "a792b89e-7010-4f3a-9567-a55ff29cc4c8", server_name": "admin",sub_path": "/test"}
+     */
+    @GetMapping("/getCode")
+    public String getCode(String client_id) {
+        List<String> codeByClientId = mapper.findCodeByClientId(client_id);
+        if (!codeByClientId.isEmpty()) {
+            return codeByClientId.get(0);
+        } else return null;
+    }
+
+    public static void getRedirectInfo() {
+        HttpClient httpClient = new DefaultHttpClient();
+        BasicHttpContext httpContext = new BasicHttpContext();
+        HttpGet httpGet = new HttpGet("http://localhost:8088/blog/main.jsp");
+        try {
+            //将HttpContext对象作为参数传给execute()方法,则HttpClient会把请求响应交互过程中的状态信息存储在HttpContext中
+            HttpResponse response = httpClient.execute(httpGet, httpContext);
+            //获取重定向之后的主机地址信息,即"http://127.0.0.1:8088"
+            HttpHost targetHost = (HttpHost) httpContext.getAttribute(ExecutionContext.HTTP_TARGET_HOST);
+            //获取实际的请求对象的URI,即重定向之后的"/blog/admin/login.jsp"
+            HttpUriRequest realRequest = (HttpUriRequest) httpContext.getAttribute(ExecutionContext.HTTP_REQUEST);
+            System.out.println("主机地址:" + targetHost);
+            System.out.println("URI信息:" + realRequest.getURI());
+            HttpEntity entity = response.getEntity();
+            if (null != entity) {
+                System.out.println("响应内容:" + EntityUtils.toString(entity, ContentType.getOrDefault(entity).getCharset()));
+                EntityUtils.consume(entity);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            httpClient.getConnectionManager().shutdown();
+        }
+    }
+
 
 }
