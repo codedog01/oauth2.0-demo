@@ -29,7 +29,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests()
-                .antMatchers("/api/**", "/oauth/checkToken","/oauth/authorize").permitAll()
+                .antMatchers("/api/**", "/oauth/checkToken","/oauth/authorize","/oauth/getCode","/oauth/removeToken").permitAll()
                 .anyRequest().authenticated()
                 .and().csrf().disable();
     }
