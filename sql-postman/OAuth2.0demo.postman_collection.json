@@ -1,0 +1,474 @@
+{
+	"info": {
+		"_postman_id": "67efe067-85c6-4b61-b761-b0f33070fb50",
+		"name": "OAuth2.0demo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "密码模式",
+			"item": [
+				{
+					"name": "获取token",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "c1",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "secret",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "c1",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "secret",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8003/oauth/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8003",
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "刷新token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8003/oauth/token?grant_type=refresh_token&refresh_token=fa051bbb-432f-4b82-a2f6-bfad6aa32996&client_id=c1&client_secret=secret",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8003",
+							"path": [
+								"oauth",
+								"token"
+							],
+							"query": [
+								{
+									"key": "grant_type",
+									"value": "refresh_token"
+								},
+								{
+									"key": "refresh_token",
+									"value": "fa051bbb-432f-4b82-a2f6-bfad6aa32996"
+								},
+								{
+									"key": "client_id",
+									"value": "c1"
+								},
+								{
+									"key": "client_secret",
+									"value": "secret"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "检查token是否有效",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"token\": \"a792b89e-7010-4f3a-9567-a55ff29cc4c8\",\r\n    \"server_name\": \"admin\",\r\n    \"sub_path\": \"/test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8003/oauth/checkToken",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8003",
+							"path": [
+								"oauth",
+								"checkToken"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "访问资源",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer 29883af3-a655-4af0-b1c7-814df9791e91",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8003/test/李四",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8003",
+							"path": [
+								"test",
+								"李四"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "客户端模式",
+			"item": [
+				{
+					"name": "1获取token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8003/oauth/token?client_id=c1&client_secret=secret&grant_type=client_credentials&scope=all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8003",
+							"path": [
+								"oauth",
+								"token"
+							],
+							"query": [
+								{
+									"key": "client_id",
+									"value": "c1"
+								},
+								{
+									"key": "client_secret",
+									"value": "secret"
+								},
+								{
+									"key": "grant_type",
+									"value": "client_credentials"
+								},
+								{
+									"key": "scope",
+									"value": "all"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2 访问资源",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer e1022183-48b6-422d-a8d6-29bf2df9f0f5",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8001/user/123",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8001",
+							"path": [
+								"user",
+								"123"
+							],
+							"query": [
+								{
+									"key": "access_token",
+									"value": "16183630-ae04-43d0-8488-5da411b547ff",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "授权码模式",
+			"item": [
+				{
+					"name": "1获取授权码",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "username",
+								"value": "c1",
+								"type": "text"
+							},
+							{
+								"key": "password",
+								"value": "secret",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8003/oauth/authorize?client_id=c1&response_type=code",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8003",
+							"path": [
+								"oauth",
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "client_id",
+									"value": "c1"
+								},
+								{
+									"key": "response_type",
+									"value": "code"
+								},
+								{
+									"key": "scope",
+									"value": "all",
+									"disabled": true
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://www.baidu.com",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2通过code获取token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8003/oauth/token?client_id=c1&client_secret=secret&grant_type=authorization_code&code=C3Ee0K&redirect_uri=http://www.baidu.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8003",
+							"path": [
+								"oauth",
+								"token"
+							],
+							"query": [
+								{
+									"key": "client_id",
+									"value": "c1"
+								},
+								{
+									"key": "client_secret",
+									"value": "secret"
+								},
+								{
+									"key": "grant_type",
+									"value": "authorization_code"
+								},
+								{
+									"key": "code",
+									"value": "C3Ee0K"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://www.baidu.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3请求资源",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "b1135488-d608-43db-812f-826e5e426fdc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer b1135488-d608-43db-812f-826e5e426fdc",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8002/user/张三",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8002",
+							"path": [
+								"user",
+								"张三"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "自定义接口实现",
+			"item": [
+				{
+					"name": "获取授权码",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "username",
+								"value": "c1",
+								"type": "text"
+							},
+							{
+								"key": "password",
+								"value": "secret",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8003/oauth/getCode?client_id=c1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8003",
+							"path": [
+								"oauth",
+								"getCode"
+							],
+							"query": [
+								{
+									"key": "client_id",
+									"value": "c1"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://www.baidu.com",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "删除token",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "username",
+								"value": "c1",
+								"type": "text"
+							},
+							{
+								"key": "password",
+								"value": "secret",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"client_id\":\"c1\",\r\n\"client_secret\":\"secret\",\r\n\"token\":\"488cf526-ef66-448f-9f20-679e1a94be78\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8003/oauth/removeToken",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8003",
+							"path": [
+								"oauth",
+								"removeToken"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
