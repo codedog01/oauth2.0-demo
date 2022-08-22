@@ -1,19 +1,8 @@
-package com.ronhe.romp.oauth2.core;
+package com.lengao.oauth2.core;
 
-import com.ronhe.romp.oauth2.core.constant.Constants;
-import com.ronhe.romp.oauth2.core.mapper.TbUserMapper;
+import com.lengao.oauth2.core.constant.Constants;
+import com.lengao.oauth2.core.mapper.TbUserMapper;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.entity.ContentType;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.ExecutionContext;
-import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;

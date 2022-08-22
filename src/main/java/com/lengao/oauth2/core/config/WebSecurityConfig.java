@@ -1,6 +1,6 @@
-package com.ronhe.romp.oauth2.core.config;
+package com.lengao.oauth2.core.config;
 
-import com.ronhe.romp.oauth2.core.filter.AuthenticationTokenFilter;
+import com.lengao.oauth2.core.filter.AuthenticationTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

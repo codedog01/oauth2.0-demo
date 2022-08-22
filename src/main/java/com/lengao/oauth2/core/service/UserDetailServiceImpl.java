@@ -1,6 +1,6 @@
-package com.ronhe.romp.oauth2.core.service;
+package com.lengao.oauth2.core.service;
 
-import com.ronhe.romp.oauth2.core.mapper.TbUserMapper;
+import com.lengao.oauth2.core.mapper.TbUserMapper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;

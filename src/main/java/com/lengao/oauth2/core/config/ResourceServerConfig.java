@@ -1,4 +1,4 @@
-package com.ronhe.romp.oauth2.core.config;
+package com.lengao.oauth2.core.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.ronhe.romp.oauth2;
+package com.lengao.oauth2;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

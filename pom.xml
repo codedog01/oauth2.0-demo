@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ronhe.romp</groupId>
-    <artifactId>romp-oauth2</artifactId>
+    <groupId>com.lengao</groupId>
+    <artifactId>oauth2.0-demo</artifactId>
     <version>8.0.0</version>
     <parent>
         <groupId>org.springframework.boot</groupId>

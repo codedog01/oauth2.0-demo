@@ -1,4 +1,4 @@
-package com.ronhe.romp.oauth2.core.handler;
+package com.lengao.oauth2.core.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package com.ronhe.romp.oauth2.core.mapper;
+package com.lengao.oauth2.core.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;

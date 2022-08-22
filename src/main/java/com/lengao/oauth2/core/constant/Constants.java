@@ -1,4 +1,4 @@
-package com.ronhe.romp.oauth2.core.constant;
+package com.lengao.oauth2.core.constant;
 
 /**
  * <p>description goes here</p>
